@@ -1,0 +1,14 @@
+{
+  "name": "zatla2-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "vite build",
+    "preview": "vite preview --port 5174"
+  },
+  "devDependencies": {
+    "vite": "^6.4.5"
+  }
+}
