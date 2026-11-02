@@ -71,7 +71,6 @@ export default function SiteHeader() {
         </Link>
         <nav aria-label="Site" className="top-nav flex items-center">
           <TopLink to="/design">Design</TopLink>
-          <TopLink to="/play">Play</TopLink>
           <TopLink to="/shop">Shop</TopLink>
           <TopLink to="/cart">Cart{qty > 0 ? ` (${qty})` : ""}</TopLink>
         </nav>

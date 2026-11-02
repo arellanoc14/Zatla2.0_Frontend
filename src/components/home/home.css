@@ -526,10 +526,7 @@ body:has(> .zatla-tunnel) #root { position: relative; z-index: 1; }
 .home .play-stats dd { font-family: var(--home-display); font-size: 2.4rem; color: #fff; }
 .home .play-stats .best { grid-column: 1 / -1; border-top: 1px solid var(--home-line); padding-top: 0.75rem; }
 
-/* Small phones: logo + four links don't fit, so the Play link steps out of
-   the bar (the hero's Play Now button and the footer still reach /play). */
 @media (max-width: 479px) {
-  .home .top-link[href="/play"] { display: none; }
   .home .site-logo img { height: 1.9rem !important; }
 }
 @media (max-width: 360px) { .home .site-logo img { height: 1.75rem !important; } }
