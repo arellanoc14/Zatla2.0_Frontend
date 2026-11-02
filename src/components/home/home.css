@@ -445,100 +445,91 @@
 .home .hero-cine { height: 100vh; height: 100dvh; display: flex; align-items: center; }
 .home .hero-cine .hero-title { text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55); }
 
-/* ---- Hero cube (HeroCube.jsx, lib/home/heroCubeScene.js) ----
-   The hero's content layer, on top of the header video: copy on one side, the cube
-   on the other. Its frame is wider than .wrap so the copy sits further left
-   and the cube gets the right half of the screen.
-   Phones: the copy moves up under the header (heading, line, eyebrow, text,
-   buttons, dots) and the cube fills whatever height is left below the
-   buttons. The hero is at least one screen tall and grows rather than
-   squeezing the cube on very short screens. */
-.home .hero > .hero-cube {
-  position: relative; z-index: 1;
-  width: min(100% - 2rem, 96rem);
-  display: flex; flex-direction: column;
-  flex: 1 1 auto; align-self: stretch;
-  padding-top: 4.75rem;                 /* clears the 4rem header */
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
-}
-.home .hero-cube-copy { position: relative; z-index: 2; max-width: 42rem; }
-.home .hero-cube-stage { position: relative; z-index: 1; flex: 1 1 auto; min-height: 12.5rem; margin-top: 0.5rem; }
-.home .hero-cube-canvas { position: absolute; inset: 0; }
-@media (max-width: 767px) {
-  .home .hero-cine { height: auto; min-height: 100vh; min-height: 100dvh; flex-direction: column; align-items: stretch; }
-  .home .hero > .hero-cube { margin-inline: auto; padding-top: 4.5rem; }
-  /* Room for the cube: both buttons on one row (a 360px phone fits them),
-     and the dots at the cube's foot instead of a row of their own. */
-  .home .hero-cube-actions { gap: 0.5rem; }
-  .home .hero-cube-actions .btn { padding-inline: 1rem; }
-  .home .hero-cube-copy { position: static; }
-  .home .hero-cube-dots {
-    position: absolute; left: 0; right: 0; bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 3;
-    justify-content: center; margin: 0;
-  }
-}
-/* Short wide screens (a phone held sideways): the hero grows with its copy
-   instead of cutting the buttons off. */
-@media (min-width: 768px) and (max-height: 560px) {
-  .home .hero-cine { height: auto; min-height: 100vh; min-height: 100dvh; }
-  .home .hero-cube-copy { padding-block: 1rem; }
-}
-/* The narrowest phones (the S24 FE is 360px): the heading on two lines, not three. */
-@media (max-width: 380px) { .home .hero-cube h1 { font-size: 2.3rem; } }
-@media (min-width: 768px) {
-  .home .hero > .hero-cube {
-    width: min(100% - 5rem, 96rem);
-    flex: 0 1 auto;                       /* the hero is a row here: keep the frame's own width */
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center; column-gap: clamp(1.5rem, 4vw, 4rem);
-    padding-top: 5rem; padding-bottom: 2rem;   /* clears the 5rem header */
-  }
-  .home .hero-cube-stage { width: 100%; min-height: 0; margin-top: 0; aspect-ratio: 1 / 1.08; max-height: calc(100dvh - 8rem); }
-  /* The cube as big as the hero allows: its canvas runs from under the header
-     to the hero's foot and from the middle to the screen's right edge, and the
-     scene sizes the cube so a tumbling corner never leaves it. The copy stays
-     on top. */
-  .home .hero-cube-stage { position: static; }
-  .home .hero-cube-canvas { top: 5rem; bottom: 0; left: 50%; right: calc((100% - 100vw) / 2); }
-  /* side="left": the cube takes the left column and the copy slides in from
-     the right. */
-  .home .hero-cube[data-side="left"] .hero-cube-stage { order: -1; }
-  .home .hero-cube[data-side="left"] .rise { transform: translate(28px, 16px); }
-}
 
-/* Pagination dots: a 28px target around an 8px dot; the face toward the
-   viewer is lit green. */
-.home .hero-cube-dots { display: flex; gap: 0.25rem; margin: 0.75rem 0 0 -0.6rem; }
-@media (min-width: 768px) { .home .hero-cube-dots { margin-top: 2rem; } }
-.home .hero-cube-dot {
-  position: relative; width: 1.75rem; height: 1.75rem; border-radius: 999px;
-  outline: none; -webkit-tap-highlight-color: transparent;
+/* ---- Home v2 (Home.jsx): particle tunnel, cards, video band, footer ---- */
+/* The tunnel sits behind the whole page; every section is see-through. */
+.home.home-v2 { background: transparent; }
+.zatla-tunnel {
+  position: fixed !important; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, #0b1a12 0%, #060a08 70%);
 }
-.home .hero-cube-dot::before {
-  content: ""; position: absolute; left: 50%; top: 50%;
-  width: 0.55rem; height: 0.55rem; margin: -0.275rem 0 0 -0.275rem; border-radius: 999px;
-  border: 1.5px solid rgba(233, 239, 234, 0.72);
-  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+/* The page itself paints above the tunnel (body's own background would
+   otherwise cover a layer under it). */
+body:has(> .zatla-tunnel) #root { position: relative; z-index: 1; }
+.home-v2 > section, .home-v2 > footer { position: relative; z-index: 1; }
+.home .v2-hero { background: none; }
+.home .v2-hero p { text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8); }
+.home .v2-title {
+  font-size: clamp(3rem, 9vw, 7.5rem); text-transform: uppercase;
+  background: linear-gradient(180deg, #fff 30%, #9be15d); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.6));
 }
-.home .hero-cube-dot:hover::before { border-color: #fff; transform: scale(1.25); }
-.home .hero-cube-dot[aria-pressed="true"]::before { background: var(--home-green); border-color: var(--home-green); box-shadow: 0 0 10px rgba(61, 214, 131, 0.75); }
-.home .hero-cube-dot:focus-visible { box-shadow: 0 0 0 2px #ffd84a; }
+.home .v2-h2 { font-size: clamp(2.2rem, 5vw, 3.75rem); text-transform: uppercase; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6); }
+.home .btn-light { background: #fff; color: #06110a; }
+.home .btn-light:hover { background: #e9ffe0; }
 
-/* Each face's link, for keyboards and screen readers: hidden until focused. */
-.home .hero-cube-links { position: absolute; left: 0; top: 0; z-index: 3; margin: 0; padding: 0; list-style: none; }
-.home .hero-cube-links a {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+/* Core upgrades: one wide card, then two; one column on phones. */
+.home .v2-cards { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .home .v2-cards { grid-template-columns: 2fr 1fr; } }
+.home .v2-card {
+  position: relative; overflow: hidden; border-radius: 1.25rem; min-height: 16rem;
+  background: var(--home-surface); box-shadow: inset 0 0 0 1px var(--home-line), 0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
-.home .hero-cube-links a:focus-visible {
-  position: static; display: inline-block; width: auto; height: auto; overflow: visible;
-  clip: auto; clip-path: none; white-space: normal; max-width: 22rem;
-  padding: 0.5rem 0.9rem; border-radius: 999px;
-  background: rgba(6, 12, 9, 0.88); color: #fff; font-size: 0.85rem; font-weight: 600;
-  outline: 2px solid #ffd84a; outline-offset: 2px;
-}
+@media (min-width: 768px) { .home .v2-card { min-height: 20rem; } .home .v2-card:nth-child(3) { grid-column: 1 / -1; min-height: 16rem; } }
+.home .v2-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 300ms ease; }
+.home .v2-card:hover img { transform: scale(1.04); opacity: 0.9; }
+.home .v2-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 10, 8, 0.9), rgba(6, 10, 8, 0.1) 60%); }
+.home .v2-card-copy { position: absolute; left: 1.5rem; right: 1.5rem; bottom: 1.4rem; z-index: 1; }
+.home .v2-card-copy h3 { font-size: clamp(1.4rem, 2.6vw, 2rem); text-transform: uppercase; }
+.home .v2-card-copy p { margin-top: 0.35rem; color: var(--home-muted); font-size: 0.95rem; }
+.home .v2-card:focus-visible { outline: 2px solid #ffd84a; outline-offset: 3px; }
 
-@media (prefers-reduced-motion: reduce) {
-  .home .hero-cube[data-side="left"] .rise { transform: none; }
-  .home .hero-cube-dot::before { transition: none; }
+/* The room video, full bleed, copy on its dark side. */
+.home .v2-band { overflow: hidden; min-height: min(80vh, 44rem); display: flex; align-items: center; }
+.home .v2-band video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+.home .v2-band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6, 10, 8, 0.85), rgba(6, 10, 8, 0.2)); }
+.home .v2-band-copy { position: relative; z-index: 1; }
+
+.home .v2-footer { background: rgba(6, 10, 8, 0.92); border-top: 1px solid var(--home-line); }
+.home .v2-foot-h { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.home .join { display: flex; gap: 0.6rem; max-width: 24rem; }
+.home .join input {
+  flex: 1; min-width: 0; height: 3rem; padding-inline: 1.1rem; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--home-line); color: var(--home-copy); outline: none;
 }
+.home .join input:focus { border-color: var(--home-green); }
+
+/* ---- /play (Play.jsx, lib/play/runner.js) ---- */
+.home.play { position: fixed; inset: 0; overflow: hidden; }
+.home .play-stage { position: absolute; inset: 0; }
+.home .play-hud {
+  position: absolute; left: 1rem; right: 1rem; top: calc(4.5rem + env(safe-area-inset-top)); z-index: 10;
+  display: flex; justify-content: space-between; pointer-events: none;
+}
+@media (min-width: 768px) { .home .play-hud { top: 5.5rem; left: 2.5rem; right: 2.5rem; } }
+.home .play-panel {
+  display: flex; flex-direction: column; padding: 0.5rem 1rem; border-radius: 0.9rem;
+  background: rgba(6, 10, 8, 0.6); border: 1px solid var(--home-line); backdrop-filter: blur(8px);
+}
+.home .play-panel span { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--home-muted); }
+.home .play-panel b { font-family: var(--home-display); font-size: 1.8rem; line-height: 1.1; }
+.home .play-screen {
+  position: absolute; inset: 0; z-index: 15; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 5rem 1.5rem 2rem; text-align: center; background: radial-gradient(circle, rgba(6, 18, 10, 0.55), rgba(6, 10, 8, 0.85));
+}
+.home .play-title { font-size: clamp(3rem, 12vw, 6.5rem); text-transform: uppercase; color: #fff; line-height: 0.9; text-shadow: 0 6px 0 #1b5e20; }
+.home .play-title span { display: block; font-size: 0.5em; color: var(--home-green); text-shadow: none; }
+.home .play-help { margin-top: 1.25rem; color: var(--home-copy); line-height: 1.6; }
+.home .play-go { margin-top: 2rem; height: 3.5rem; padding-inline: 2.5rem; font-size: 1.1rem; }
+.home .play-stats { margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 3rem; }
+.home .play-stats dt { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--home-muted); }
+.home .play-stats dd { font-family: var(--home-display); font-size: 2.4rem; color: #fff; }
+.home .play-stats .best { grid-column: 1 / -1; border-top: 1px solid var(--home-line); padding-top: 0.75rem; }
+
+/* Small phones: logo + four links don't fit, so the Play link steps out of
+   the bar (the hero's Play Now button and the footer still reach /play). */
+@media (max-width: 479px) {
+  .home .top-link[href="/play"] { display: none; }
+  .home .site-logo img { height: 1.9rem !important; }
+}
+@media (max-width: 360px) { .home .site-logo img { height: 1.75rem !important; } }

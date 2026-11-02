@@ -21,6 +21,7 @@ const PublicView = lazy(() => import('@/pages/PublicView'));
 const Cart = lazy(() => import('@/pages/Cart'));
 const Checkout = lazy(() => import('@/pages/Checkout'));
 const OrderSuccess = lazy(() => import('@/pages/OrderSuccess'));
+const Play = lazy(() => import('@/pages/Play'));
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -50,6 +51,7 @@ const AnimatedRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order/:id" element={<OrderSuccess />} />
         <Route path="/view/:token" element={<PublicView />} />
+        <Route path="/play" element={<Play />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       </Suspense>
