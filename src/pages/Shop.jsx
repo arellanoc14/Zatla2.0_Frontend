@@ -5,22 +5,6 @@ import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-reac
 import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
 
-// Simple per-product qty stored in localStorage (separate from the grow-light
-// design-sync cart, which lives in cart.js).
-const SIMPLE_KEY = "zatla_simple_cart_v1";
-function readSimple() {
-  try { return JSON.parse(localStorage.getItem(SIMPLE_KEY)) || {}; } catch { return {}; }
-}
-function writeSimple(next) {
-  try { localStorage.setItem(SIMPLE_KEY, JSON.stringify(next)); } catch {}
-}
-function useSimpleCart(id) {
-  const [qty, setQty] = useState(() => readSimple()[id] || 0);
-  const add = () => { const next = { ...readSimple(), [id]: (readSimple()[id] || 0) + 1 }; writeSimple(next); setQty(next[id]); };
-  const remove = () => { const cur = readSimple()[id] || 0; if (cur <= 0) return; const next = { ...readSimple(), [id]: cur - 1 }; writeSimple(next); setQty(next[id]); };
-  return { qty, add, remove };
-}
-
 // A product photo, or a main photo with clickable thumbnails when there are several.
 function Gallery({ images, alt }) {
   const [i, setI] = useState(0);
@@ -48,8 +32,10 @@ function Gallery({ images, alt }) {
 export default function Shop() {
   const success = new URLSearchParams(window.location.search).get("success");
   const { qty, total, designQty, addExtra, removeOne, clearCart } = useCart();
-  const ucl = useSimpleCart("ucl");
-  const ctrl = useSimpleCart("controller");
+  const { ucl: uclQty, controller: ctrlQty, addItem, setOtherQty } = useCart();
+  const hookFor = (sku, n) => ({ qty: n, add: () => addItem(sku, 1), remove: () => setOtherQty(sku, n - 1) });
+  const ucl = hookFor("ucl", uclQty);
+  const ctrl = hookFor("controller", ctrlQty);
 
   return (
     <div className="min-h-screen bg-industrial-bg text-industrial-copy">

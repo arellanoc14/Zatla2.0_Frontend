@@ -29,7 +29,9 @@ export const formatPrice = (n) => `$${n.toLocaleString("en-US")}`;
 // Under-canopy light and controller — additional products shown in the shop.
 export const PRODUCT_UCL = {
   id: "ucl",
+  sku: "ucl",
   name: "ZATLA Under-Canopy Light",
+  title: "ZATLA Under-Canopy Light",
   price: 195,
   currency: "USD",
   // One product, three photos: the shop shows them as a small gallery.
@@ -46,7 +48,9 @@ export const PRODUCT_UCL = {
 
 export const PRODUCT_CONTROLLER = {
   id: "controller",
+  sku: "controller",
   name: "ZATLA Controller",
+  title: "ZATLA Controller",
   price: 170,
   currency: "USD",
   image: "/images/zatla-controller.jpg",
@@ -59,3 +63,12 @@ export const PRODUCT_CONTROLLER = {
     "Compact wall-mount enclosure",
   ],
 };
+
+// The cart, cart page and checkout use these names; the shop page uses the
+// PRODUCT_* ones above. Same objects.
+export const UCL_PRODUCT = PRODUCT_UCL;
+export const CONTROLLER_PRODUCT = PRODUCT_CONTROLLER;
+
+// The only skus the API (orders.js on zatla-web) accepts, 1-200 of each.
+// Checkout sends nothing else.
+export const ORDER_SKUS = ["grow_light", "ucl", "controller"];

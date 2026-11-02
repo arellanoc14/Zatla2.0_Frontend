@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
-import { PRODUCT } from "@/lib/product";
+import { PRODUCT, UCL_PRODUCT, CONTROLLER_PRODUCT } from "@/lib/product";
 import { benchRect } from "@/lib/growroom/clearances";
 
-// The shopping cart. ZATLA sells one product, the grow light, and its quantity
-// has two parts:
+// The shopping cart: the grow light, the under-canopy light (ucl) and the
+// controller. The grow light's quantity has two parts:
 //   designQty  the number of grow lights in the visitor's layout, written by
 //              the designer itself (useDesignCartSync) on every change - the
 //              visitor never adds or removes these by hand;
 //   extraQty   lights added on the shop page or in the cart, on top of that.
+// The UCL and the controller are plain quantities, added on the shop page.
 // Kept in this browser's localStorage (ZATLA has no login), so it survives
 // refreshes and follows the visitor from the designer to the shop. Components
 // read it through useCart(), which re-renders on every change in this tab and
 // in other tabs.
 const KEY = "zatla_cart_v1";
 const EVENT = "zatla-cart";
-const EMPTY = { designQty: 0, extraQty: 0 };
+const EMPTY = { designQty: 0, extraQty: 0, ucl: 0, controller: 0 };
+const MAX_OTHER = 200; // per product; the server refuses more than 200 of a line
+const OTHER = { ucl: UCL_PRODUCT, controller: CONTROLLER_PRODUCT };
+const whole = (v) => Math.max(0, Math.round(Number(v) || 0));
 
 function read() {
   try {
@@ -22,8 +26,10 @@ function read() {
     if (!raw) return { ...EMPTY };
     const v = JSON.parse(raw);
     return {
-      designQty: Math.max(0, Math.round(Number(v?.designQty) || 0)),
-      extraQty: Math.max(0, Math.round(Number(v?.extraQty) || 0)),
+      designQty: whole(v?.designQty),
+      extraQty: whole(v?.extraQty),
+      ucl: Math.min(MAX_OTHER, whole(v?.ucl)),
+      controller: Math.min(MAX_OTHER, whole(v?.controller)),
     };
   } catch {
     return { ...EMPTY };
@@ -51,6 +57,17 @@ export function setExtraQty(n) {
 }
 
 export function addExtra(n = 1) { setExtraQty(read().extraQty + n); }
+
+// The UCL and the controller: set how many are in the cart, or add some.
+export function setOtherQty(sku, n) {
+  if (!OTHER[sku]) return;
+  write({ ...read(), [sku]: Math.min(MAX_OTHER, whole(n)) });
+}
+// Add n of any product: grow lights go on the "added by you" count.
+export function addItem(sku, n = 1) {
+  if (sku === "grow_light") addExtra(n);
+  else if (OTHER[sku]) setOtherQty(sku, read()[sku] + n);
+}
 
 export function clearCart() { write({ ...EMPTY }); }
 
@@ -96,8 +113,16 @@ export function useCart() {
     setCart(read()); // a write may have landed between first render and subscribing
     return () => { window.removeEventListener(EVENT, onLocal); window.removeEventListener("storage", onStorage); };
   }, []);
-  const qty = cart.designQty + cart.extraQty;
-  return { ...cart, qty, total: qty * PRODUCT.price, setExtraQty, addExtra, removeOne, clearCart };
+  const qty = cart.designQty + cart.extraQty; // grow lights only
+  // One line per product in the cart: { sku, name, title, price, qty, total }.
+  const lines = [
+    { sku: "grow_light", name: PRODUCT.name, title: PRODUCT.name, price: PRODUCT.price, qty },
+    { sku: "ucl", name: UCL_PRODUCT.name, title: UCL_PRODUCT.title, price: UCL_PRODUCT.price, qty: cart.ucl },
+    { sku: "controller", name: CONTROLLER_PRODUCT.name, title: CONTROLLER_PRODUCT.title, price: CONTROLLER_PRODUCT.price, qty: cart.controller },
+  ].filter((l) => l.qty > 0).map((l) => ({ ...l, total: l.qty * l.price }));
+  const count = lines.reduce((n, l) => n + l.qty, 0); // everything in the cart
+  const total = lines.reduce((n, l) => n + l.total, 0);
+  return { ...cart, qty, count, lines, total, setExtraQty, addExtra, removeOne, setOtherQty, addItem, clearCart };
 }
 
 // Keeps the cart's design line equal to the layout's grow-light count, in real

@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/cart";
-import { PRODUCT, formatPrice } from "@/lib/product";
-import { stripePromise } from "@/lib/stripeClient";
+import { formatPrice, ORDER_SKUS } from "@/lib/product";
 import { apiUrl } from "@/lib/api";
+import { stripePromise } from "@/lib/stripeClient";
 
 const US_STATES = [
   "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA",
@@ -69,7 +69,7 @@ function PayForm({ orderId, onPaid }) {
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { qty, total } = useCart();
+  const { count, lines, total } = useCart();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [line1, setLine1] = useState("");
@@ -83,8 +83,8 @@ export default function Checkout() {
   const [error, setError] = useState("");
 
   const canSubmit = useMemo(
-    () => qty > 0 && name.trim() && /\S+@\S+\.\S+/.test(email) && line1.trim() && city.trim() && state && postalCode.trim(),
-    [qty, name, email, line1, city, state, postalCode],
+    () => count > 0 && name.trim() && /\S+@\S+\.\S+/.test(email) && line1.trim() && city.trim() && state && postalCode.trim(),
+    [count, name, email, line1, city, state, postalCode],
   );
 
   const createIntent = async (e) => {
@@ -97,7 +97,7 @@ export default function Checkout() {
         name: name.trim(),
         email: email.trim(),
         shipping: { line1: line1.trim(), line2: line2.trim(), city: city.trim(), state, postalCode: postalCode.trim() },
-        items: [{ sku: "grow_light", qty }],
+        items: lines.filter((l) => ORDER_SKUS.includes(l.sku)).map((l) => ({ sku: l.sku, qty: l.qty })),
       });
       setClientSecret(data.clientSecret);
       setOrderId(data.orderId);
@@ -109,8 +109,8 @@ export default function Checkout() {
   };
 
   useEffect(() => {
-    if (qty === 0 && !orderId) navigate("/cart", { replace: true });
-  }, [qty, orderId, navigate]);
+    if (count === 0 && !orderId) navigate("/cart", { replace: true });
+  }, [count, orderId, navigate]);
 
   if (!stripePromise) {
     return (
@@ -128,7 +128,7 @@ export default function Checkout() {
         </Link>
         <h1 className="mt-6 text-3xl font-bold">Checkout</h1>
         <p className="mt-2 text-sm text-industrial-muted">
-          {qty} {PRODUCT.name}{qty === 1 ? "" : "s"} · {formatPrice(total)}
+          {lines.map((l) => `${l.qty} × ${l.title}`).join(" · ")} · {formatPrice(total)}
         </p>
 
         {!clientSecret ? (
