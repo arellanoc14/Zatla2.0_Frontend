@@ -1,0 +1,544 @@
+/* Home page styles. Scoped under .home so nothing here reaches the studio pages. */
+.home {
+  --home-bg: #060a08;
+  --home-surface: #0e1511;
+  --home-line: rgba(255, 255, 255, 0.09);
+  --home-copy: #e9efea;
+  --home-muted: #93a398;
+  --home-green: #2fc272;
+  --home-display: 'Archivo', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  background: var(--home-bg);
+  color: var(--home-copy);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: 'tnum' 1, 'cv11' 1;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+.home .display {
+  font-family: var(--home-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.home .wrap { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+@media (min-width: 768px) { .home .wrap { width: min(100% - 5rem, 76rem); } }
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+/* The banner: a deep blue-black field, our green on the copy side and the
+   leaf's own cool light on the art side, so the two halves belong together. */
+.home .hero { background: radial-gradient(120% 80% at 50% 0%, #0b1420 0%, #070b10 42%, var(--home-bg) 100%); }
+.home .hero-glow {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(48% 42% at 70% 48%, rgba(92, 140, 255, 0.14), transparent 70%),
+    radial-gradient(38% 32% at 20% 44%, rgba(61, 214, 131, 0.09), transparent 72%);
+}
+.home .hero > .wrap { position: relative; z-index: 1; }
+
+/* Dotted rails down both margins, as on the reference banner. Wide screens
+   only — below that the margins belong to the content. */
+.home .hero-rail {
+  position: absolute; top: 50%; z-index: 0; display: none;
+  width: 8px; height: 220px; transform: translateY(-50%); pointer-events: none;
+  background-image: radial-gradient(circle, rgba(61, 214, 131, 0.8) 1.5px, transparent 1.8px);
+  background-size: 8px 22px;
+  opacity: 0.45;
+}
+.home .hero-rail-l { left: 1.25rem; }
+.home .hero-rail-r { right: 1.25rem; }
+@media (min-width: 1280px) { .home .hero-rail { display: block; } }
+
+/* The headline reads as lit metal, with a light bar struck under it. */
+.home .hero-title {
+  color: var(--home-copy);
+  background-image: linear-gradient(96deg, #eafff3 0%, #9ff5c8 22%, #3dd683 48%, #eafff3 70%, #2fc272 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .home .hero-title { background-image: none; -webkit-text-fill-color: var(--home-copy); }
+}
+.home .hero-streak {
+  display: block; width: min(100%, 26rem); height: 2px; margin-top: 1.25rem;
+  background: linear-gradient(90deg, transparent 0%, rgba(61, 214, 131, 0.65) 18%, #eafff4 48%, rgba(61, 214, 131, 0.65) 76%, transparent 100%);
+  box-shadow: 0 0 18px rgba(61, 214, 131, 0.5);
+}
+.home .hero-eyebrow {
+  margin-top: 1.15rem;
+  font-family: var(--home-display);
+  font-weight: 700; font-size: 0.8rem;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--home-green);
+}
+
+/* The hero artwork: the fixture (live 3D, face-on) hung over the red photo.
+   Layers, bottom to top: the photo plate, the beam of light falling on it, the
+   drifting photons, then the fixture. They arrive in order: the plate settles
+   in, the fixture fades in over it, the beam switches on, the photons start. */
+.home .bud-scene {
+  position: relative; width: 100%; max-width: 42rem; margin-inline: auto;
+  aspect-ratio: 42 / 50;
+}
+.home .bud-plate {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 88%; height: 78%; margin: 0;
+  border-radius: 1.4rem; overflow: hidden;
+  background: #1a0507;
+  box-shadow: 0 30px 80px -30px rgba(255, 30, 70, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  opacity: 0; animation: plate-in 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.45s forwards;
+}
+.home .bud-plate img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 42%;
+  transform-origin: 50% 35%;
+  animation: plate-breathe 26s ease-in-out infinite alternate;
+}
+/* The photo fades out at its top where the light comes in, and at its foot into the page. */
+.home .bud-plate::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(10, 2, 4, 0.55), transparent 34%),
+    linear-gradient(to top, rgba(7, 11, 16, 0.85), transparent 28%);
+}
+@keyframes plate-in { from { opacity: 0; transform: translateX(-50%) translateY(26px) scale(0.96); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+@keyframes plate-breathe { from { transform: scale(1); } to { transform: scale(1.07); } }
+
+/* Photons: small motes that fall from the fixture through the beam and fade
+   as they reach the flower. Each has its own lane, delay and pace. */
+.home .bud-photons { position: absolute; left: 18%; width: 64%; top: 30%; height: 56%; pointer-events: none; z-index: 1; }
+.home .bud-photons i {
+  position: absolute; left: var(--x); top: 0; width: var(--s); height: var(--s);
+  border-radius: 50%; background: #ffd6ea;
+  box-shadow: 0 0 8px 2px rgba(255, 120, 170, 0.8);
+  opacity: 0; animation: photon-fall var(--t) linear calc(2.2s + var(--d)) infinite;
+}
+@keyframes photon-fall {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  12% { opacity: 0.9; }
+  80% { opacity: 0.35; }
+  100% { transform: translateY(100%) scale(1.1); opacity: 0; }
+}
+
+/* The fixture: live 3D over the whole composition (transparent canvas) so its
+   cone of light can run down over the photo. It arrives after the plate. */
+.home .bud-fixture {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  opacity: 0; animation: fixture-in 1.2s ease-out 0.7s forwards;
+}
+.home .hero-light-stage { position: absolute; inset: 0; pointer-events: auto; }
+@keyframes fixture-in { to { opacity: 1; } }
+
+.home-stage::before {
+  content: "";
+  position: absolute; left: 50%; bottom: 14%;
+  width: 70%; height: 22%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 240, 226, 0.16), rgba(255, 240, 226, 0.05) 55%, transparent 100%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* Hero copy: fade in while sliding up, staggered — headline, then the line,
+   then the buttons. */
+.home .rise { opacity: 0; transform: translate(-28px, 16px); animation: home-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; animation-delay: calc(0.25s + var(--i, 0) * 0.18s); }
+
+/* Phones: the copy sits OVER the hero artwork instead of under it — the scene
+   fills the top of the hero as a backdrop, a soft scrim fades it out behind the
+   headline, and each row still slides and fades in on its own beat.
+   Scoped to .hero:not(.hero-cine) — this is the old 3D-scene hero only; the
+   cinematic slider hero (.hero-cine) has its own full-screen layout below and
+   never needs the bud-scene clearance padding. */
+@media (max-width: 767px) {
+  .home .hero:not(.hero-cine) > .wrap { position: relative; display: block; padding-top: 0; }
+  .home .hero:not(.hero-cine) .bud-scene { position: absolute; left: 0; right: 0; top: 3.5rem; z-index: 0; pointer-events: none; max-width: 26rem; }
+  .home .hero:not(.hero-cine) .hero-copy { position: relative; z-index: 1; padding-top: 104vw; }
+  .home .hero:not(.hero-cine) .hero-copy::before {
+    content: ""; position: absolute; left: -16px; right: -16px; top: 70vw; bottom: -2rem; z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--home-bg, #0b0d10) 38%);
+  }
+}
+@keyframes home-rise { to { opacity: 1; transform: none; } }
+
+/* ── The room and the canopy ──────────────────────────────────────────── */
+/* Two pictures under the banner, each carrying its own copy. The text sits on
+   a scrim that rises out of the bottom of the frame, so it stays readable over
+   a bright 3D render and a dark red canopy alike. */
+.home .split-panel {
+  position: relative; overflow: hidden;
+  border-radius: 1rem; aspect-ratio: 1 / 1;
+  background: var(--home-surface);
+  box-shadow: inset 0 0 0 1px var(--home-line);
+}
+/* The room render is a link into the designer: it covers the whole panel
+   (under the scrim and the caption, whose own link still sits on top). */
+.home .split-img-link { position: absolute; inset: 0; display: block; }
+.home .split-panel > img, .home .split-img-link > img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* The render is barely wider than it is tall, so it is cropped as little as
+   possible; the canopy is a tall frame, held so the fixture stays in shot. */
+.home .split-room img { object-position: center center; filter: brightness(0.86) contrast(1.04); }
+.home .split-canopy > img { object-position: center 38%; }
+.home .split-panel:hover > img, .home .split-panel:hover .split-img-link > img { transform: scale(1.03); }
+/* The scrim covers the whole frame, not just the foot: heavy where the words
+   sit, a breath of it at the head. That also settles the bright render into
+   the page instead of leaving it a white tile on black. */
+.home .split-panel::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, rgba(6, 10, 8, 0.97) 0%, rgba(6, 10, 8, 0.93) 24%, rgba(6, 10, 8, 0.64) 46%, rgba(6, 10, 8, 0.18) 72%, rgba(6, 10, 8, 0.06) 100%);
+}
+.home .split-panel > figcaption {
+  position: absolute; inset: auto 0 0 0; z-index: 2;
+  padding: 1.6rem 1.5rem 1.5rem;
+}
+.home .split-label {
+  font-family: var(--home-display); font-weight: 700; font-size: 0.72rem;
+  letter-spacing: 0.26em; text-transform: uppercase; color: var(--home-green);
+}
+.home .split-title { margin-top: 0.55rem; font-size: 1.55rem; }
+.home .split-body { margin-top: 0.7rem; max-width: 36ch; line-height: 1.6; color: rgba(233, 239, 234, 0.88); }
+.home .split-link {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.1rem;
+  font-weight: 600; font-size: 0.92rem; color: var(--home-green);
+  border-radius: 4px; transition: gap 200ms ease, color 160ms ease;
+}
+.home .split-link::after { content: "\2192"; }
+.home .split-link:hover { gap: 0.72rem; color: #3dd683; }
+.home .split-link:focus-visible { outline: 2px solid #ffd84a; outline-offset: 4px; }
+@media (min-width: 768px) {
+  .home .split-panel > figcaption { padding: 2.1rem 2rem 1.9rem; }
+  .home .split-title { font-size: 1.95rem; }
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────── */
+.home [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.home [data-reveal].in { opacity: 1; transform: none; }
+.home .rule { border-top: 1px solid var(--home-line); }
+
+/* The grow section: the room goes dark around the plant. */
+.home .grow { background: radial-gradient(70% 60% at 28% 50%, #0a1410 0%, var(--home-bg) 70%); }
+.home .grow-stage { border-radius: 1rem; overflow: hidden; background: radial-gradient(80% 60% at 50% 70%, #10171a, #080b0c 75%); box-shadow: inset 0 0 0 1px var(--home-line); }
+/* The fixture on its own, beside the product copy, now that the banner has
+   the leaf. Same plate as the grow stage, lit a little higher. */
+.home .light-stage { border-radius: 1rem; overflow: hidden; background: radial-gradient(80% 60% at 50% 60%, #10171a, #080b0c 75%); box-shadow: inset 0 0 0 1px var(--home-line); }
+.home .grow-stage::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(6, 10, 8, 0.35), transparent 25%, transparent 80%, rgba(6, 10, 8, 0.5));
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+.home .btn {
+  --tx: 0px; --ty: 0px; --mx: 50%;
+  position: relative; overflow: hidden; isolation: isolate;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  height: 3rem; padding-inline: 1.4rem; border-radius: 999px;
+  font-weight: 600; font-size: 0.95rem; line-height: 1;
+  transform: translate(var(--tx), var(--ty));
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), background-color 160ms ease, border-color 160ms ease, box-shadow 220ms ease;
+  outline: none;
+}
+/* The light follows the pointer across the button. */
+.home .btn::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(120px 60px at var(--mx) 50%, rgba(255, 255, 255, 0.28), transparent 70%);
+  opacity: 0; transition: opacity 220ms ease;
+}
+.home .btn:hover::after { opacity: 1; }
+.home .btn:hover { box-shadow: 0 10px 30px -12px rgba(47, 194, 114, 0.55); }
+.home .btn:focus-visible { box-shadow: 0 0 0 3px var(--home-bg), 0 0 0 5px #ffd84a; }
+.home .btn:active { transform: translate(var(--tx), var(--ty)) scale(0.96); }
+.home .btn-primary { background: var(--home-green); color: #06110a; }
+.home .btn-primary:hover { background: #3dd683; }
+.home .btn-secondary { border: 1px solid rgba(255, 255, 255, 0.22); color: var(--home-copy); }
+.home .btn-secondary:hover { border-color: rgba(255, 255, 255, 0.55); box-shadow: 0 10px 30px -14px rgba(255, 255, 255, 0.35); }
+
+/* The top bar: the wordmark and nav slide down and fade in on load, over
+   whatever is animating in the hero behind them (z-20 keeps them on top). */
+.home .site-header {
+  opacity: 0; transform: translateY(-14px);
+  animation: site-header-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: 0.1s;
+}
+@keyframes site-header-in { to { opacity: 1; transform: none; } }
+
+/* The floating wordmark: centered on the bar regardless of its own height, so
+   doubling its size never pushes the row taller or nudges the nav links. A
+   touch smaller on narrow phones, where a full 3rem mark would crowd Design /
+   Shop — full size from the point the row itself grows (md:h-20). */
+.home .site-logo { top: 50%; transform: translateY(-50%); }
+.home .site-logo img { height: 2.25rem !important; }
+/* The smallest phones (320–360px): at 2.25rem the mark ran into "Design",
+   worse with a cart count showing. */
+@media (max-width: 360px) { .home .site-logo img { height: 1.75rem !important; } }
+@media (min-width: 480px) { .home .site-logo img { height: 2.5rem !important; } }
+@media (min-width: 768px) { .home .site-logo img { height: 3rem !important; } }
+
+/* Text links in the header and footer */
+.home .nav-link { color: var(--home-muted); transition: color 160ms ease; border-radius: 4px; }
+.home .nav-link:hover, .home .nav-link[aria-current="page"] { color: var(--home-copy); }
+.home .nav-link:focus-visible { outline: 2px solid #ffd84a; outline-offset: 4px; }
+
+/* ── Top links: Design / Shop / Cart (SiteHeader.jsx) ───────────────────
+   Each link switches on like an LED bar.
+   Hover (pointer devices): a green glass pill springs in behind the label,
+   the label lifts and lights up, a light bar sweeps out under it, and the
+   other links step back.
+   Press (every device, from pointerdown): the link squishes and the pill
+   floods solid green, a flash bursts from the press point and a ring pulses
+   out. Burst and ring are front-loaded so they read inside the page's 200ms
+   exit fade. The links carry their own padding so the pill has room; the
+   nav's negative margin keeps "Cart" aligned to the content edge. */
+.home .top-nav { gap: 0.25rem; margin-right: -0.7rem; }
+.home .top-link {
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center;
+  height: 2.5rem; padding-inline: 0.7rem; border-radius: 999px;
+  font-size: 0.875rem; font-weight: 500; line-height: 1;
+  color: var(--home-muted);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; user-select: none;
+  transition: color 200ms ease, opacity 220ms ease, text-shadow 200ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (min-width: 768px) {
+  .home .top-nav { margin-right: -0.9rem; }
+  .home .top-link { padding-inline: 0.9rem; }
+}
+@media (max-width: 380px) {
+  .home .top-nav { gap: 0.1rem; margin-right: -0.55rem; }
+  .home .top-link { padding-inline: 0.55rem; }
+}
+/* Resting state: every link already sits in its own lit pill so a first-time
+   visitor sees three clear buttons, not grey text lost in the photo. */
+.home .top-nav { gap: 0.6rem; margin-right: 0; }
+.home .top-link {
+  color: #fff; font-weight: 600;
+  background: rgba(6, 12, 9, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(61, 214, 131, 0.55), 0 0 18px -4px rgba(61, 214, 131, 0.45);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  padding-inline: 1.1rem;
+}
+.home .top-link:last-child { background: var(--home-green); color: #04100a; text-shadow: none; box-shadow: 0 0 22px -2px rgba(61, 214, 131, 0.7); }
+@media (max-width: 380px) { .home .top-nav { gap: 0.3rem; } .home .top-link { padding-inline: 0.7rem; } }
+/* The pill. Clips the burst; its glow sits outside it. */
+.home .top-link-fx {
+  position: absolute; inset: 0; z-index: -1; border-radius: inherit; overflow: hidden;
+  background: linear-gradient(180deg, rgba(61, 214, 131, 0.24), rgba(47, 194, 114, 0.08)), rgba(6, 12, 9, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(61, 214, 131, 0.55), 0 10px 28px -10px rgba(47, 194, 114, 0.75);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+  opacity: 0; transform: scale(0.6, 0.5);
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms ease;
+}
+/* The light bar under the label. */
+.home .top-link-fx::after {
+  content: ""; position: absolute; left: 22%; right: 22%; bottom: 5px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #3dd683 22%, #eafff4 50%, #3dd683 78%, transparent);
+  box-shadow: 0 0 10px 1px rgba(61, 214, 131, 0.85);
+  opacity: 0; transform: scaleX(0);
+  transition: opacity 180ms ease, transform 220ms ease;
+}
+.home .top-link-label { position: relative; }
+/* Press burst and ring: mounted fresh on every press, so they animate on mount. */
+.home .top-link-burst {
+  position: absolute; width: 220%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), rgba(234, 255, 244, 0.5) 38%, rgba(61, 214, 131, 0) 100%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: top-link-burst 560ms cubic-bezier(0.15, 0.75, 0.25, 1) forwards;
+}
+@keyframes top-link-burst {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+.home .top-link-ring {
+  position: absolute; inset: 0; z-index: -2; border-radius: inherit; pointer-events: none;
+  animation: top-link-ring 620ms cubic-bezier(0.15, 0.75, 0.25, 1) forwards;
+}
+@keyframes top-link-ring {
+  0% { box-shadow: 0 0 0 0 rgba(61, 214, 131, 0.85); }
+  100% { box-shadow: 0 0 0 16px rgba(61, 214, 131, 0); }
+}
+
+/* Hover — pointer devices only, so a tap on a phone never leaves a pill stuck on. */
+@media (hover: hover) {
+  .home .top-link:hover { color: #fff; transform: translateY(-2px); text-shadow: 0 0 16px rgba(61, 214, 131, 0.6); }
+  .home .top-link:hover .top-link-fx {
+    opacity: 1; transform: none;
+    transition: opacity 160ms ease, transform 440ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+  }
+  .home .top-link:hover .top-link-fx::after {
+    opacity: 1; transform: scaleX(1);
+    transition: opacity 160ms ease 70ms, transform 460ms cubic-bezier(0.2, 0.7, 0.2, 1) 70ms;
+  }
+  .home .top-nav:has(.top-link:hover) .top-link:not(:hover) { opacity: 0.45; }
+}
+/* Keyboard focus gets the hover look plus the site's yellow focus ring. */
+.home .top-link:focus-visible { color: #fff; outline: 2px solid #ffd84a; outline-offset: 3px; }
+.home .top-link:focus-visible .top-link-fx { opacity: 1; transform: none; }
+.home .top-link:focus-visible .top-link-fx::after { opacity: 1; transform: scaleX(1); }
+/* The page you're on keeps a dimmer bar lit. */
+.home .top-link[aria-current="page"] { color: var(--home-copy); }
+.home .top-link[aria-current="page"] .top-link-fx::after { opacity: 0.7; transform: scaleX(0.55); }
+
+/* Press. After the hover rules so it wins; quick in, springs back out. */
+.home .top-link:active, .home .top-link.is-pressed {
+  color: #04100a; text-shadow: none;
+  transform: translateY(0) scale(0.9);
+  transition: color 80ms ease, text-shadow 80ms ease, opacity 120ms ease, transform 110ms cubic-bezier(0.3, 0, 0.5, 1);
+}
+.home .top-link:active .top-link-fx, .home .top-link.is-pressed .top-link-fx {
+  opacity: 1; transform: none;
+  background: linear-gradient(180deg, #5ee69c, var(--home-green));
+  box-shadow: inset 0 0 0 1px rgba(234, 255, 244, 0.85), 0 0 0 4px rgba(61, 214, 131, 0.2), 0 0 34px rgba(61, 214, 131, 0.8);
+  transition: opacity 70ms ease, transform 110ms ease, box-shadow 110ms ease;
+}
+.home .top-link:active .top-link-fx::after, .home .top-link.is-pressed .top-link-fx::after { opacity: 0; transition: opacity 60ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home .top-link, .home .top-link:hover, .home .top-link:active, .home .top-link.is-pressed { transform: none; }
+  .home .top-link-fx { transform: none; }
+  .home .top-link-fx::after { transform: scaleX(1); }
+  .home .top-link-burst, .home .top-link-ring { display: none; }
+}
+
+/* Spec readouts */
+.home .spec-value { font-family: var(--home-display); font-weight: 700; font-stretch: 105%; letter-spacing: -0.01em; }
+
+/* ── Cursor (pointer devices only; see Cursor.jsx) ─────────────────────── */
+.home .cursor-ring, .home .cursor-dot {
+  position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; opacity: 0;
+  border-radius: 999px; transition: opacity 300ms ease, width 220ms ease, height 220ms ease, border-color 220ms ease;
+  will-change: transform;
+}
+.home .cursor-ring { width: 34px; height: 34px; border: 1px solid rgba(233, 239, 234, 0.6); mix-blend-mode: difference; transition: opacity 300ms ease, transform 60ms linear, border-color 220ms ease; }
+.home .cursor-ring.hot { border-color: var(--home-green); }
+.home .cursor-dot { width: 5px; height: 5px; background: var(--home-green); }
+/* Over the top links the pill is the hover cue, so the ring and dot fade out
+   (!important: Cursor.jsx sets opacity inline as the pointer enters the page). */
+.home .cursor-ring.tucked, .home .cursor-dot.tucked { opacity: 0 !important; }
+@media (pointer: coarse) { .home .cursor-ring, .home .cursor-dot { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .home .btn, .home .btn::after, .home [data-reveal] { transition: none; }
+  .home .rise, .home .site-header { animation: none; opacity: 1; transform: none; }
+  .home .bud-plate, .home .bud-fixture { animation: none; opacity: 1; }
+  .home .bud-plate img, .home .bud-photons i { animation: none; }
+  .home .split-panel > img, .home .split-img-link > img, .home .split-link { transition: none; }
+  .home .split-panel:hover > img, .home .split-panel:hover .split-img-link > img { transform: none; }
+  .home [data-reveal] { opacity: 1; transform: none; }
+  .home .btn { transform: none; }
+  .home .cursor-ring, .home .cursor-dot { display: none; }
+}
+
+/* ---- Hero (the header video, Home.jsx) ----
+   Fills exactly one screen on any device: 100dvh is the viewport height after
+   mobile browser toolbars settle, with 100vh as the fallback for browsers that
+   don't support dvh yet. The result: the hero always covers the full screen,
+   and scrolling reveals the body section with a clean edge, never a sliver of
+   it peeking up under the hero. */
+.home .hero-cine { height: 100vh; height: 100dvh; display: flex; align-items: center; }
+.home .hero-cine .hero-title { text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55); }
+
+/* ---- Hero cube (HeroCube.jsx, lib/home/heroCubeScene.js) ----
+   The hero's content layer, on top of the header video: copy on one side, the cube
+   on the other. Its frame is wider than .wrap so the copy sits further left
+   and the cube gets the right half of the screen.
+   Phones: the copy moves up under the header (heading, line, eyebrow, text,
+   buttons, dots) and the cube fills whatever height is left below the
+   buttons. The hero is at least one screen tall and grows rather than
+   squeezing the cube on very short screens. */
+.home .hero > .hero-cube {
+  position: relative; z-index: 1;
+  width: min(100% - 2rem, 96rem);
+  display: flex; flex-direction: column;
+  flex: 1 1 auto; align-self: stretch;
+  padding-top: 4.75rem;                 /* clears the 4rem header */
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.home .hero-cube-copy { position: relative; z-index: 2; max-width: 42rem; }
+.home .hero-cube-stage { position: relative; z-index: 1; flex: 1 1 auto; min-height: 12.5rem; margin-top: 0.5rem; }
+.home .hero-cube-canvas { position: absolute; inset: 0; }
+@media (max-width: 767px) {
+  .home .hero-cine { height: auto; min-height: 100vh; min-height: 100dvh; flex-direction: column; align-items: stretch; }
+  .home .hero > .hero-cube { margin-inline: auto; padding-top: 4.5rem; }
+  /* Room for the cube: both buttons on one row (a 360px phone fits them),
+     and the dots at the cube's foot instead of a row of their own. */
+  .home .hero-cube-actions { gap: 0.5rem; }
+  .home .hero-cube-actions .btn { padding-inline: 1rem; }
+  .home .hero-cube-copy { position: static; }
+  .home .hero-cube-dots {
+    position: absolute; left: 0; right: 0; bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 3;
+    justify-content: center; margin: 0;
+  }
+}
+/* Short wide screens (a phone held sideways): the hero grows with its copy
+   instead of cutting the buttons off. */
+@media (min-width: 768px) and (max-height: 560px) {
+  .home .hero-cine { height: auto; min-height: 100vh; min-height: 100dvh; }
+  .home .hero-cube-copy { padding-block: 1rem; }
+}
+/* The narrowest phones (the S24 FE is 360px): the heading on two lines, not three. */
+@media (max-width: 380px) { .home .hero-cube h1 { font-size: 2.3rem; } }
+@media (min-width: 768px) {
+  .home .hero > .hero-cube {
+    width: min(100% - 5rem, 96rem);
+    flex: 0 1 auto;                       /* the hero is a row here: keep the frame's own width */
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center; column-gap: clamp(1.5rem, 4vw, 4rem);
+    padding-top: 5rem; padding-bottom: 2rem;   /* clears the 5rem header */
+  }
+  .home .hero-cube-stage { width: 100%; min-height: 0; margin-top: 0; aspect-ratio: 1 / 1.08; max-height: calc(100dvh - 8rem); }
+  /* The cube as big as the hero allows: its canvas runs from under the header
+     to the hero's foot and from the middle to the screen's right edge, and the
+     scene sizes the cube so a tumbling corner never leaves it. The copy stays
+     on top. */
+  .home .hero-cube-stage { position: static; }
+  .home .hero-cube-canvas { top: 5rem; bottom: 0; left: 50%; right: calc((100% - 100vw) / 2); }
+  /* side="left": the cube takes the left column and the copy slides in from
+     the right. */
+  .home .hero-cube[data-side="left"] .hero-cube-stage { order: -1; }
+  .home .hero-cube[data-side="left"] .rise { transform: translate(28px, 16px); }
+}
+
+/* Pagination dots: a 28px target around an 8px dot; the face toward the
+   viewer is lit green. */
+.home .hero-cube-dots { display: flex; gap: 0.25rem; margin: 0.75rem 0 0 -0.6rem; }
+@media (min-width: 768px) { .home .hero-cube-dots { margin-top: 2rem; } }
+.home .hero-cube-dot {
+  position: relative; width: 1.75rem; height: 1.75rem; border-radius: 999px;
+  outline: none; -webkit-tap-highlight-color: transparent;
+}
+.home .hero-cube-dot::before {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 0.55rem; height: 0.55rem; margin: -0.275rem 0 0 -0.275rem; border-radius: 999px;
+  border: 1.5px solid rgba(233, 239, 234, 0.72);
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.home .hero-cube-dot:hover::before { border-color: #fff; transform: scale(1.25); }
+.home .hero-cube-dot[aria-pressed="true"]::before { background: var(--home-green); border-color: var(--home-green); box-shadow: 0 0 10px rgba(61, 214, 131, 0.75); }
+.home .hero-cube-dot:focus-visible { box-shadow: 0 0 0 2px #ffd84a; }
+
+/* Each face's link, for keyboards and screen readers: hidden until focused. */
+.home .hero-cube-links { position: absolute; left: 0; top: 0; z-index: 3; margin: 0; padding: 0; list-style: none; }
+.home .hero-cube-links a {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.home .hero-cube-links a:focus-visible {
+  position: static; display: inline-block; width: auto; height: auto; overflow: visible;
+  clip: auto; clip-path: none; white-space: normal; max-width: 22rem;
+  padding: 0.5rem 0.9rem; border-radius: 999px;
+  background: rgba(6, 12, 9, 0.88); color: #fff; font-size: 0.85rem; font-weight: 600;
+  outline: 2px solid #ffd84a; outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home .hero-cube[data-side="left"] .rise { transform: none; }
+  .home .hero-cube-dot::before { transition: none; }
+}

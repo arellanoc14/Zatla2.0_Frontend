@@ -1,0 +1,20 @@
+# Text files use LF in the repo on every OS (Railway builds on Linux).
+* text=auto eol=lf
+
+# Binary assets: never touch line endings or diff them as text.
+*.glb binary
+*.gltf binary
+*.bin binary
+*.ktx2 binary
+*.wasm binary
+*.mp4 binary
+*.webm binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

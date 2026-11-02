@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "site",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "http-server@14.1.1", "-p", "8080", "-c-1"],
-      "port": 8080
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5174
     }
   ]
 }

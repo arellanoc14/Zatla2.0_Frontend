@@ -1,46 +1,48 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Zatla</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <nav class="nav">
-    <a class="logo" href="#">Zatla</a>
-    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="links">&#9776;</button>
-    <ul id="links" class="links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-
-  <header class="hero">
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="assets/header.mp4" type="video/mp4">
-    </video>
-  </header>
-
-  <main>
-    <section id="about">
-      <h2>About</h2>
-      <p>Section one content goes here.</p>
-    </section>
-    <section id="services">
-      <h2>Services</h2>
-      <p>Section two content goes here.</p>
-    </section>
-  </main>
-
-  <footer id="contact">
-    <p>&copy; 2026 Zatla</p>
-  </footer>
-
-  <script>
-    const btn = document.querySelector('.menu-btn');
-    btn.onclick = () => btn.setAttribute('aria-expanded', document.body.classList.toggle('menu-open'));
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/zatla-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ZATLA" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0b0f0d" />
+    <!-- Installable app (Add to Home Screen). Android/Chrome reads the manifest. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="screen-orientation" content="landscape" />
+    <title>ZATLA</title>
+    <style>
+      html,body{margin:0;background:#0b0f0d}
+      .zsplash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0f0d}
+      .zsplash img{height:clamp(30px,6.5vw,60px);width:auto;animation:zsfade .9s ease both,zsbreathe 2.4s ease-in-out .9s infinite}
+      @keyframes zsfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+      @keyframes zsbreathe{0%,100%{opacity:1}50%{opacity:.55}}
+      @media (prefers-reduced-motion:reduce){.zsplash img{animation:none}}
+    </style>
+    <!-- Hero cube pictures: fetched with the page, so the cube is ready the moment the script runs. -->
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-1.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-2.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-3.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-4.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-5.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-6.webp" media="(min-width: 768px) and (pointer: fine)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-1-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-2-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-3-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-4-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-5-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+    <link rel="preload" as="image" type="image/webp" crossorigin="anonymous" href="/hero/cube/face-6-sm.webp" media="(max-width: 767px), (pointer: coarse)" />
+  </head>
+  <body>
+    <div id="root">
+      <!-- ZATLA loading screen; React replaces it as soon as the app mounts. -->
+      <div class="zsplash" role="img" aria-label="ZATLA loading">
+        <img src="/brand/zatla-logo.png" alt="" width="2184" height="569" />
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

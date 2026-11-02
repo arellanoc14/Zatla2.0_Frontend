@@ -1,0 +1,19 @@
+{
+  "name": "ZATLA",
+  "short_name": "ZATLA",
+  "description": "CAD design and 3D simulation for planning commercial cannabis cultivation facilities.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0f0d",
+  "theme_color": "#0b0f0d",
+  "icons": [
+    {
+      "src": "/zatla-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
