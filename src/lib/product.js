@@ -32,7 +32,8 @@ export const PRODUCT_UCL = {
   name: "ZATLA Under-Canopy Light",
   price: 195,
   currency: "USD",
-  image: "/images/zatla-ucl.jpg",
+  // One product, three photos: the shop shows them as a small gallery.
+  images: ["/images/zatla-ucl-1.jpg", "/images/zatla-ucl-2.jpg", "/images/zatla-ucl-3.jpg"],
   description:
     "A compact, high-intensity under-canopy LED bar delivering targeted red and white spectrum directly to lower canopy zones, boosting yield without adding top-light wattage.",
   features: [

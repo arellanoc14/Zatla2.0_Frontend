@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import ProductModel3D from "@/components/shop/ProductModel3D";
 import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
@@ -20,6 +19,28 @@ function useSimpleCart(id) {
   const add = () => { const next = { ...readSimple(), [id]: (readSimple()[id] || 0) + 1 }; writeSimple(next); setQty(next[id]); };
   const remove = () => { const cur = readSimple()[id] || 0; if (cur <= 0) return; const next = { ...readSimple(), [id]: cur - 1 }; writeSimple(next); setQty(next[id]); };
   return { qty, add, remove };
+}
+
+// A product photo, or a main photo with clickable thumbnails when there are several.
+function Gallery({ images, alt }) {
+  const [i, setI] = useState(0);
+  return (
+    <div className="bg-black">
+      <div className="aspect-video overflow-hidden">
+        <img src={images[i]} alt={alt} className="w-full h-full object-contain" />
+      </div>
+      {images.length > 1 && (
+        <div className="flex gap-2 p-2">
+          {images.map((src, k) => (
+            <button key={src} type="button" onClick={() => setI(k)} aria-label={`Photo ${k + 1} of ${images.length}`} aria-pressed={k === i}
+              className={`h-14 w-20 overflow-hidden rounded-md border-2 ${k === i ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}>
+              <img src={src} alt="" className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // Checkout moves to Stripe Checkout on this app's own server in a later step;
@@ -43,7 +64,7 @@ export default function Shop() {
         {/* ── Grow Light (flagship, full-width) ─────────────────────────────── */}
         <div className="mt-8 grid md:grid-cols-2 gap-10 items-center">
           <div className="rounded-2xl bg-industrial-surface border border-industrial-line aspect-square overflow-hidden">
-            <ProductModel3D />
+            <img src="/brand/zatla-light-front.jpg" alt={PRODUCT.name} className="h-full w-full object-cover" />
           </div>
           <div>
             <p className="text-xs uppercase tracking-widest text-primary font-semibold">Shop</p>
@@ -97,9 +118,7 @@ export default function Shop() {
               { product: PRODUCT_CONTROLLER, hook: ctrl },
             ].map(({ product, hook }) => (
               <div key={product.id} className="rounded-2xl bg-industrial-surface border border-industrial-line overflow-hidden flex flex-col">
-                <div className="aspect-video overflow-hidden bg-black">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                </div>
+                <Gallery images={product.images || [product.image]} alt={product.name} />
                 <div className="p-6 flex flex-col flex-1">
                   <h3 className="text-xl font-bold">{product.name}</h3>
                   <p className="mt-1 text-2xl font-semibold text-primary">{formatPrice(product.price)}</p>
