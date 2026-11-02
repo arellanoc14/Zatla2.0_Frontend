@@ -25,3 +25,36 @@ export const PRODUCT = {
 };
 
 export const formatPrice = (n) => `$${n.toLocaleString("en-US")}`;
+
+// Under-canopy light and controller — additional products shown in the shop.
+export const PRODUCT_UCL = {
+  id: "ucl",
+  name: "ZATLA Under-Canopy Light",
+  price: 195,
+  currency: "USD",
+  image: "/images/zatla-ucl.jpg",
+  description:
+    "A compact, high-intensity under-canopy LED bar delivering targeted red and white spectrum directly to lower canopy zones, boosting yield without adding top-light wattage.",
+  features: [
+    "Dual-row red + white LED strip for deep-canopy penetration",
+    "Lightweight bar design fits rolling bench tiers",
+    "Daisy-chain ready for multi-bar runs",
+    "Compatible with ZATLA Controller",
+  ],
+};
+
+export const PRODUCT_CONTROLLER = {
+  id: "controller",
+  name: "ZATLA Controller",
+  price: 170,
+  currency: "USD",
+  image: "/images/zatla-controller.jpg",
+  description:
+    "A touchscreen grow-room controller that schedules and dims your ZATLA lights, logs environmental data, and integrates with your facility's power system.",
+  features: [
+    "Touchscreen interface with live status display",
+    "Schedule, dim and switch multiple light zones",
+    "Environmental data logging",
+    "Compact wall-mount enclosure",
+  ],
+};

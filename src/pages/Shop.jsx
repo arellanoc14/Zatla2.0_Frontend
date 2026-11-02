@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductModel3D from "@/components/shop/ProductModel3D";
 import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
-import { PRODUCT, formatPrice } from "@/lib/product";
+import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
+
+// Simple per-product qty stored in localStorage (separate from the grow-light
+// design-sync cart, which lives in cart.js).
+const SIMPLE_KEY = "zatla_simple_cart_v1";
+function readSimple() {
+  try { return JSON.parse(localStorage.getItem(SIMPLE_KEY)) || {}; } catch { return {}; }
+}
+function writeSimple(next) {
+  try { localStorage.setItem(SIMPLE_KEY, JSON.stringify(next)); } catch {}
+}
+function useSimpleCart(id) {
+  const [qty, setQty] = useState(() => readSimple()[id] || 0);
+  const add = () => { const next = { ...readSimple(), [id]: (readSimple()[id] || 0) + 1 }; writeSimple(next); setQty(next[id]); };
+  const remove = () => { const cur = readSimple()[id] || 0; if (cur <= 0) return; const next = { ...readSimple(), [id]: cur - 1 }; writeSimple(next); setQty(next[id]); };
+  return { qty, add, remove };
+}
 
 // Checkout moves to Stripe Checkout on this app's own server in a later step;
 // until then the button says so plainly.
 export default function Shop() {
   const success = new URLSearchParams(window.location.search).get("success");
   const { qty, total, designQty, addExtra, removeOne, clearCart } = useCart();
+  const ucl = useSimpleCart("ucl");
+  const ctrl = useSimpleCart("controller");
 
   return (
     <div className="min-h-screen bg-industrial-bg text-industrial-copy">
@@ -21,6 +39,8 @@ export default function Shop() {
         {success && (
           <div className="mt-6 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm">Thank you! Your order has been placed.</div>
         )}
+
+        {/* ── Grow Light (flagship, full-width) ─────────────────────────────── */}
         <div className="mt-8 grid md:grid-cols-2 gap-10 items-center">
           <div className="rounded-2xl bg-industrial-surface border border-industrial-line aspect-square overflow-hidden">
             <ProductModel3D />
@@ -65,6 +85,45 @@ export default function Shop() {
               </div>
             )}
             <p className="mt-3 text-sm text-industrial-muted">Lights placed in the <Link to="/design" className="text-primary underline-offset-2 hover:underline">designer</Link> are added to your cart automatically.</p>
+          </div>
+        </div>
+
+        {/* ── Additional products ────────────────────────────────────────────── */}
+        <div className="mt-16 border-t border-industrial-line pt-12">
+          <h2 className="text-2xl font-bold mb-8">More Products</h2>
+          <div className="grid sm:grid-cols-2 gap-8">
+            {[
+              { product: PRODUCT_UCL, hook: ucl },
+              { product: PRODUCT_CONTROLLER, hook: ctrl },
+            ].map(({ product, hook }) => (
+              <div key={product.id} className="rounded-2xl bg-industrial-surface border border-industrial-line overflow-hidden flex flex-col">
+                <div className="aspect-video overflow-hidden bg-black">
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-bold">{product.name}</h3>
+                  <p className="mt-1 text-2xl font-semibold text-primary">{formatPrice(product.price)}</p>
+                  <p className="mt-3 text-sm text-industrial-muted flex-1">{product.description}</p>
+                  <ul className="mt-4 space-y-1.5">
+                    {product.features.map((f) => (
+                      <li key={f} className="flex gap-2 text-sm"><Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />{f}</li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 flex items-center gap-3">
+                    <Button className="gap-2" onClick={hook.add}>
+                      <ShoppingCart className="w-4 h-4" /> Add to cart
+                    </Button>
+                    {hook.qty > 0 && (
+                      <div className="flex items-center gap-2 ml-auto">
+                        <button type="button" aria-label="Remove one" onClick={hook.remove} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-industrial-line hover:bg-white/5"><Minus className="h-4 w-4" /></button>
+                        <span className="min-w-[1.5rem] text-center font-bold" aria-live="polite">{hook.qty}</span>
+                        <button type="button" aria-label="Add one" onClick={hook.add} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-industrial-line hover:bg-white/5"><Plus className="h-4 w-4" /></button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
