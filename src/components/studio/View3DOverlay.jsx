@@ -382,6 +382,10 @@ export default function View3DOverlay({
 // Design / Results tabs always show; the body opens to ~40% of the screen.
 // It SNAPS between the two heights — an animated height would resize the
 // WebGL canvas every frame — and the 3D above it shrinks rather than hides.
+// The sheet's top bar turns white when the sheet is open: these tokens put the
+// dark app theme back to its light values for everything inside the bar.
+const SHEET_BAR_LIGHT = { "--background": "210 18% 92%", "--foreground": "222 30% 11%", "--card": "0 0% 100%", "--muted-foreground": "215 16% 40%", "--accent": "142 60% 94%", "--accent-foreground": "142 71% 22%" };
+
 function BottomSheet({ open, onOpenChange, summary, roomName, tab, onTab, section, onSection, children }) {
   const startY = React.useRef(null);
   const moved = React.useRef(0);
@@ -402,6 +406,7 @@ function BottomSheet({ open, onOpenChange, summary, roomName, tab, onTab, sectio
       aria-label="Design and results"
       {...stop}
     >
+      <div className={open ? "rounded-t-2xl bg-white text-foreground" : ""} style={open ? SHEET_BAR_LIGHT : undefined}>
       <div {...swipe}>
         <button
           type="button"
@@ -440,6 +445,7 @@ function BottomSheet({ open, onOpenChange, summary, roomName, tab, onTab, sectio
       <div className="shrink-0 px-3 pt-1.5 pb-2 space-y-1.5">
         <TabBar tab={tab} onTab={onTab} compact />
         {open && tab === "design" && <SectionBar section={section} onSection={onSection} compact />}
+      </div>
       </div>
       {open && (
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar px-3 pb-3">

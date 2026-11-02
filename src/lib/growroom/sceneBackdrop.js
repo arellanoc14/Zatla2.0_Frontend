@@ -6,11 +6,12 @@ import * as THREE from "three";
 // against. sRGB-tagged so it renders exactly as drawn (an sRGB background
 // texture is not tone mapped). Cached per theme and shared across rebuilds;
 // it is not a material, so the scene's dispose pass never touches it.
-export const BACKDROP_THEME = "light"; // the one-constant switch: "light" | "dark"
+export const BACKDROP_THEME = "black"; // the one-constant switch: "light" | "dark" | "black"
 
 const THEMES = {
   light: ["#f3f5f7", "#dfe3e7", "#c7ccd2"],
   dark: ["#3a3f46", "#262a30", "#15181c"],
+  black: ["#000000", "#000000", "#000000"],
 };
 
 const cache = {};

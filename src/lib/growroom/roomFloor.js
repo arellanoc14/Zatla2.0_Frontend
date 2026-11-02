@@ -16,14 +16,11 @@ const TILE_IN = 120; // one concrete tile per 10ft, whatever the room's size
 let _roomFloorMat = null;
 function getRoomFloorMaterial() {
   if (_roomFloorMat) return _roomFloorMat;
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
+  const mat = new THREE.MeshLambertMaterial({
+    color: 0x0a0a0a,
     // Light sealed concrete; the facility slab outside the rooms is a step
     // darker, so each room reads as its own lit slab.
-    map: getFloorAlbedo("#8a8e92"),
-    roughness: 0.45,
-    metalness: 0.08,
-    envMapIntensity: 0.35,
+    map: getFloorAlbedo("#070707"),
     // Pull the room floor toward the camera in depth so it always wins over the
     // facility slab beneath it — no z-fighting / color flicker where they overlap.
     polygonOffset: true,

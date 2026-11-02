@@ -90,8 +90,9 @@ export function getBenchContactMaterial() {
 export function buildFacilityFloor(scene, { roomW, roomL, cx, cz }) {
   // Slab apron — larger, distinctly darker matte ground well BELOW the polished
   // slab so it never z-fights the floor. polygonOffset pushes it back in depth too.
-  const apronMat = new THREE.MeshStandardMaterial({
-    color: 0x9a9fa3, roughness: 0.85, metalness: 0.0, envMapIntensity: 0.25,
+  // Lambert: no specular, so black stays black under the scene lights.
+  const apronMat = new THREE.MeshLambertMaterial({
+    color: 0x000000,
     polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1,
   });
   apronMat.userData._procedural = true;
@@ -104,16 +105,13 @@ export function buildFacilityFloor(scene, { roomW, roomL, cx, cz }) {
   // Polished concrete slab — procedural troweled albedo tiled ~120in per tile, a
   // step darker than the room floors (roomFloor.js) so each room reads as its own
   // lit slab; soft polished sheen via the env map (not a mirror).
-  const floorAlbedo = getFloorAlbedo("#7a8084");
+  const floorAlbedo = getFloorAlbedo("#040404");
   if (floorAlbedo) {
     floorAlbedo.repeat.set(Math.max(1, roomW / 120), Math.max(1, roomL / 120));
   }
-  const roomFloorMat = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
+  const roomFloorMat = new THREE.MeshLambertMaterial({
+    color: 0x050505,
     map: floorAlbedo,
-    roughness: 0.35,
-    metalness: 0.1,
-    envMapIntensity: 0.5,
   });
   roomFloorMat.userData._procedural = true;
   const roomFloor = new THREE.Mesh(new THREE.PlaneGeometry(roomW * 2.2, roomL * 2.2), roomFloorMat);
