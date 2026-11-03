@@ -4,6 +4,7 @@
 // power (1000 W fixture).
 export const PRODUCT = {
   name: "ZATLA Grow Light",
+  specSheet: "/specs/zatla-grow-light-spec-sheet.pdf", // downloadable PDF, shown on the shop page
   price: 750,                    // USD
   currency: "USD",
   description:
@@ -30,6 +31,7 @@ export const formatPrice = (n) => `$${n.toLocaleString("en-US")}`;
 export const PRODUCT_UCL = {
   id: "ucl",
   sku: "ucl",
+  specSheet: "/specs/zatla-under-canopy-light-spec-sheet.pdf",
   name: "ZATLA Under-Canopy Light",
   title: "ZATLA Under-Canopy Light",
   price: 195,

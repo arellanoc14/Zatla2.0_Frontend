@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, FileDown, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
 import AccountNav from "@/components/AccountNav";
 import { useAuth } from "@/lib/AuthContext";
+
+// A download link for a product's spec sheet (a PDF in public/specs/).
+function SpecSheetLink({ href, name }) {
+  return (
+    <a href={href} download className="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-2 hover:underline">
+      <FileDown className="h-4 w-4" aria-hidden="true" /> Download the {name} spec sheet (PDF)
+    </a>
+  );
+}
 
 // A product photo, or a main photo with clickable thumbnails when there are several.
 function Gallery({ images, alt }) {
@@ -69,7 +78,8 @@ export default function Shop() {
                 <li key={f} className="flex gap-2 text-sm"><Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />{f}</li>
               ))}
             </ul>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-6"><SpecSheetLink href={PRODUCT.specSheet} name="grow light" /></div>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button size="lg" className="gap-2" onClick={() => addExtra(1)}>
                 <ShoppingCart className="w-4 h-4" /> Add to cart
               </Button>
@@ -121,6 +131,7 @@ export default function Shop() {
                       <li key={f} className="flex gap-2 text-sm"><Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />{f}</li>
                     ))}
                   </ul>
+                  {product.specSheet && <div className="mt-4"><SpecSheetLink href={product.specSheet} name="under-canopy light" /></div>}
                   <div className="mt-6 flex items-center gap-3">
                     <Button className="gap-2" onClick={hook.add}>
                       <ShoppingCart className="w-4 h-4" /> Add to cart
