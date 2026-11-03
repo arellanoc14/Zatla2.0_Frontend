@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-reac
 import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
 import AccountNav from "@/components/AccountNav";
+import { useAuth } from "@/lib/AuthContext";
 
 // A product photo, or a main photo with clickable thumbnails when there are several.
 function Gallery({ images, alt }) {
@@ -34,6 +35,8 @@ export default function Shop() {
   const success = new URLSearchParams(window.location.search).get("success");
   const { qty, total, designQty, addExtra, removeOne, clearCart } = useCart();
   const { ucl: uclQty, controller: ctrlQty, addItem, setOtherQty } = useCart();
+  // Cart quantities and totals are only shown to a signed-in visitor.
+  const signedIn = useAuth().isAuthenticated;
   const hookFor = (sku, n) => ({ qty: n, add: () => addItem(sku, 1), remove: () => setOtherQty(sku, n - 1) });
   const ucl = hookFor("ucl", uclQty);
   const ctrl = hookFor("controller", ctrlQty);
@@ -70,9 +73,9 @@ export default function Shop() {
               <Button size="lg" className="gap-2" onClick={() => addExtra(1)}>
                 <ShoppingCart className="w-4 h-4" /> Add to cart
               </Button>
-              <Button asChild size="lg" variant="outline"><Link to="/cart">Cart{qty > 0 ? ` (${qty})` : ""}</Link></Button>
+              <Button asChild size="lg" variant="outline"><Link to="/cart">Cart{signedIn && qty > 0 ? ` (${qty})` : ""}</Link></Button>
             </div>
-            {qty > 0 && (
+            {signedIn && qty > 0 && (
               <div className="mt-6 rounded-xl border border-industrial-line bg-industrial-surface p-4" aria-label="Your cart">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -122,7 +125,7 @@ export default function Shop() {
                     <Button className="gap-2" onClick={hook.add}>
                       <ShoppingCart className="w-4 h-4" /> Add to cart
                     </Button>
-                    {hook.qty > 0 && (
+                    {signedIn && hook.qty > 0 && (
                       <div className="flex items-center gap-2 ml-auto">
                         <button type="button" aria-label="Remove one" onClick={hook.remove} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-industrial-line hover:bg-white/5"><Minus className="h-4 w-4" /></button>
                         <span className="min-w-[1.5rem] text-center font-bold" aria-live="polite">{hook.qty}</span>
