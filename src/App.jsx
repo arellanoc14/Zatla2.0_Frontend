@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useSystemDarkMode } from '@/hooks/useSystemDarkMode';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider } from '@/lib/AuthContext';
+import RequireAuth from './components/RequireAuth';
 import ScrollToTop from './components/ScrollToTop';
 import PageLoader from './components/PageLoader';
 import Home from '@/pages/Home';
@@ -22,6 +23,11 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const Checkout = lazy(() => import('@/pages/Checkout'));
 const OrderSuccess = lazy(() => import('@/pages/OrderSuccess'));
 const Play = lazy(() => import('@/pages/Play'));
+const Orders = lazy(() => import('@/pages/Orders'));
+const Login = lazy(() => import('@/pages/Login'));
+const Register = lazy(() => import('@/pages/Register'));
+const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -42,16 +48,21 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         {/* The studio is 3D-only: there is no 2D plan anymore. */}
-        <Route path="/design" element={<Design3D />} />
+        <Route path="/design" element={<RequireAuth><Design3D /></RequireAuth>} />
         {/* Old addresses of the studio. */}
         <Route path="/design/3d" element={<Navigate to="/design" replace />} />
         <Route path="/studio-3d" element={<Navigate to="/design" replace />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
         <Route path="/order/:id" element={<OrderSuccess />} />
         <Route path="/view/:token" element={<PublicView />} />
         <Route path="/play" element={<Play />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       </Suspense>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Minus, Plus, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
+import AccountNav from "@/components/AccountNav";
 import { PRODUCT, UCL_PRODUCT, CONTROLLER_PRODUCT, formatPrice } from "@/lib/product";
 
 const stepper = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-industrial-line hover:bg-white/5 disabled:opacity-40";
@@ -37,9 +38,12 @@ export default function Cart() {
   return (
     <div className="min-h-screen bg-industrial-bg text-industrial-copy">
       <div className="mx-auto max-w-3xl px-6 py-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
-          <ArrowLeft className="h-4 w-4" /> Home
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
+            <ArrowLeft className="h-4 w-4" /> Home
+          </Link>
+          <AccountNav />
+        </div>
         <h1 className="mt-6 flex items-center gap-3 text-3xl font-bold"><ShoppingCart className="h-7 w-7" /> Your cart</h1>
 
         {count === 0 ? (

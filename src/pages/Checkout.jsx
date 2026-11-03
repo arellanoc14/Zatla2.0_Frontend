@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/cart";
 import { formatPrice, ORDER_SKUS } from "@/lib/product";
 import { apiUrl } from "@/lib/api";
+import AccountNav from "@/components/AccountNav";
 import { stripePromise } from "@/lib/stripeClient";
 
 const US_STATES = [
@@ -123,9 +124,12 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-industrial-bg text-industrial-copy">
       <div className="mx-auto max-w-xl px-6 py-8">
-        <Link to="/cart" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
-          <ArrowLeft className="h-4 w-4" /> Cart
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link to="/cart" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
+            <ArrowLeft className="h-4 w-4" /> Cart
+          </Link>
+          <AccountNav />
+        </div>
         <h1 className="mt-6 text-3xl font-bold">Checkout</h1>
         <p className="mt-2 text-sm text-industrial-muted">
           {lines.map((l) => `${l.qty} × ${l.title}`).join(" · ")} · {formatPrice(total)}

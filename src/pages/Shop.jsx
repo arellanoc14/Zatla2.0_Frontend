@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { PRODUCT, PRODUCT_UCL, PRODUCT_CONTROLLER, formatPrice } from "@/lib/product";
 import { useCart } from "@/lib/cart";
+import AccountNav from "@/components/AccountNav";
 
 // A product photo, or a main photo with clickable thumbnails when there are several.
 function Gallery({ images, alt }) {
@@ -40,9 +41,12 @@ export default function Shop() {
   return (
     <div className="min-h-screen bg-industrial-bg text-industrial-copy">
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
-          <ArrowLeft className="w-4 h-4" /> Back
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-industrial-muted hover:text-industrial-copy">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </Link>
+          <AccountNav />
+        </div>
         {success && (
           <div className="mt-6 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm">Thank you! Your order has been placed.</div>
         )}
